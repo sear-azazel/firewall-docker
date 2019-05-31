@@ -38,7 +38,8 @@ COPY php/crontab/laravel /var/spool/cron/crontabs/root
 # Application
 WORKDIR /work
 RUN curl -SL https://github.com/sear-azazel/firewall/archive/${APP_VERSION}.tar.gz | \
-  tar -xz -C ${APP_DIR} --strip=2 --wildcards '*/src/*'
+  tar -xz -C ${APP_DIR} --strip=2 --wildcards '*/src/*' && \
+  chmod 777 -R ./storage ./bootstrap/cache
 
 # Composer
 RUN set -eux && \
@@ -51,4 +52,6 @@ RUN set -eux && \
 
 # Entrypoint
 COPY docker-entrypoint.sh /
+RUN chmod 755 /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["php-fpm"]
